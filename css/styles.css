@@ -1,41 +1,78 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #c0ffff; /* Bluish background color */
+  color: #333;
 }
 
 header {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 1em;
+  background-color: #0077cc; /* Bluish header color */
+  padding: 10px;
+  text-align: center;
 }
 
 nav {
-    background-color: #444;
-    color: #fff;
-    text-align: center;
-    padding: 1em;
-}
-
-nav a {
-    color: #fff;
-    text-decoration: none;
-    padding: 1em;
-    margin: 0 1em;
+  text-align: center;
+  padding: 10px;
 }
 
 section {
-    padding: 2em;
+  padding: 20px;
 }
 
 footer {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 1em;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
+  background-color: #0077cc; /* Bluish footer color */
+  padding: 10px;
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.contact-info {
+  text-align: center;
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.project {
+  text-align: center;
+}
+
+.project img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Add the following styles to align the logo and text in the header */
+.header-container {
+  display: flex;
+  align-items: center;
+}
+
+.header-container h1 {
+  margin-left: 20px; /* Adjust the margin as needed for spacing */
+}
+
+/* Add the following styles to style the services as buttons */
+.services {
+  text-align: center;
+}
+
+.services a {
+  text-decoration: none;
+  padding: 10px 20px;
+  margin: 5px;
+  background-color: #005a8c; /* Bluish button color */
+  color: #fff;
+  border-radius: 5px;
+}
+
+.services a:hover {
+  background-color: #0077cc; /* Hover color */
 }
