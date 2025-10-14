@@ -15,7 +15,12 @@
         <img src="brp.jpg" class="brand-logo" alt="Great Builds Engineering Services logo" />
         <span class="brand-name">Great Builds Engineering Services Pvt. Ltd.</span>
       </a>
-      <button class="nav-toggle" aria-controls="primary-navigation" aria-expanded="false">Menu</button>
+      <button class="nav-toggle" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span class="visually-hidden">Menu</span>
+      </button>
       <nav id="primary-navigation" class="nav" aria-label="Primary">
         <ul>
           <li><a href="#home">Home</a></li>
@@ -366,9 +371,21 @@
         <a href="#" aria-label="LinkedIn placeholder" class="social-link"><span aria-hidden="true">IN</span></a>
         <a href="#" aria-label="Twitter/X placeholder" class="social-link"><span aria-hidden="true">X</span></a>
       </div>
+      <ul class="footer-links" aria-label="Footer links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
       <p>&copy; <span id="year"></span> Great Builds Engineering Services Pvt. Ltd. All rights reserved.</p>
     </div>
   </footer>
+
+  <a href="#home" id="backToTop" class="back-to-top" aria-label="Back to top">↑</a>
+
+  <div class="mobile-action-bar" aria-label="Quick actions">
+    <a class="action" href="tel:9865365029" aria-label="Call us">Call</a>
+    <a class="action" href="mailto:greatbuilds2018@gmail.com" aria-label="Email us">Email</a>
+  </div>
 
   <script src="script.js"></script>
 </body>

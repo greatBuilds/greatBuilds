@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     navToggle.addEventListener('click', () => {
       const isOpen = nav.classList.toggle('is-open');
       navToggle.setAttribute('aria-expanded', String(isOpen));
+      navToggle.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
     });
 
     // Close menu on link click (mobile)
@@ -20,6 +21,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // Update footer year
   const yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+  // Back to top visibility
+  const backToTop = document.getElementById('backToTop');
+  function updateBackToTop() {
+    if (!backToTop) return;
+    if (window.scrollY > 400) backToTop.classList.add('is-visible');
+    else backToTop.classList.remove('is-visible');
+  }
+  window.addEventListener('scroll', updateBackToTop, { passive: true });
+  window.addEventListener('load', updateBackToTop);
 
   // Smooth scroll for internal links
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -85,6 +96,13 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       document.querySelectorAll('.modal.is-open').forEach(m => closeModal(m));
+      if (nav && nav.classList.contains('is-open')) {
+        nav.classList.remove('is-open');
+        if (navToggle) {
+          navToggle.setAttribute('aria-expanded', 'false');
+          navToggle.setAttribute('aria-label', 'Open menu');
+        }
+      }
     }
   });
 
@@ -227,6 +245,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const withinPopover = loginPopover && loginPopover.contains(e.target);
     if (!withinToggle && !withinPopover) {
       closeLoginPopover();
+    }
+    // Close mobile nav on outside click
+    const withinNavToggle = navToggle && navToggle.contains(e.target);
+    const withinNav = nav && nav.contains(e.target);
+    if (nav && nav.classList.contains('is-open') && !withinNav && !withinNavToggle) {
+      nav.classList.remove('is-open');
+      if (navToggle) {
+        navToggle.setAttribute('aria-expanded', 'false');
+        navToggle.setAttribute('aria-label', 'Open menu');
+      }
     }
   }, true);
 
