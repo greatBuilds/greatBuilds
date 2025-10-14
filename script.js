@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const isOpen = nav.classList.toggle('is-open');
       navToggle.setAttribute('aria-expanded', String(isOpen));
       navToggle.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+      document.body.classList.toggle('no-scroll', isOpen);
     });
 
     // Close menu on link click (mobile)
@@ -14,6 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (e.target.matches('a') && nav.classList.contains('is-open')) {
         nav.classList.remove('is-open');
         navToggle.setAttribute('aria-expanded', 'false');
+        navToggle.setAttribute('aria-label', 'Open menu');
+        document.body.classList.remove('no-scroll');
       }
     });
   }
@@ -102,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
           navToggle.setAttribute('aria-expanded', 'false');
           navToggle.setAttribute('aria-label', 'Open menu');
         }
+        document.body.classList.remove('no-scroll');
       }
     }
   });
@@ -255,11 +259,23 @@ document.addEventListener('DOMContentLoaded', () => {
         navToggle.setAttribute('aria-expanded', 'false');
         navToggle.setAttribute('aria-label', 'Open menu');
       }
+      document.body.classList.remove('no-scroll');
     }
   }, true);
 
   // Reposition on resize/scroll
   window.addEventListener('resize', () => { if (loginPopover && loginPopover.classList.contains('is-open')) positionLoginPopover(); });
+  // Close mobile nav when switching to desktop
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= 768 && nav && nav.classList.contains('is-open')) {
+      nav.classList.remove('is-open');
+      if (navToggle) {
+        navToggle.setAttribute('aria-expanded', 'false');
+        navToggle.setAttribute('aria-label', 'Open menu');
+      }
+      document.body.classList.remove('no-scroll');
+    }
+  });
   window.addEventListener('scroll', () => { if (loginPopover && loginPopover.classList.contains('is-open')) positionLoginPopover(); }, true);
 
   if (logoutBtn) {

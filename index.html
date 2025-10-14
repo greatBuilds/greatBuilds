@@ -12,7 +12,7 @@
   <header class="site-header">
     <div class="container header-inner">
       <a href="#home" class="brand" aria-label="Great Builds Engineering Services Pvt. Ltd. home">
-        <img src="brp.jpg" class="brand-logo" alt="Great Builds Engineering Services logo" />
+        <img src="assets/brp.jpg" class="brand-logo" alt="Great Builds Engineering Services logo" />
         <span class="brand-name">Great Builds Engineering Services Pvt. Ltd.</span>
       </a>
       <button class="nav-toggle" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open menu">
@@ -22,18 +22,23 @@
         <span class="visually-hidden">Menu</span>
       </button>
       <nav id="primary-navigation" class="nav" aria-label="Primary">
-        <ul>
-          <li><a href="#home">Home</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#services">Services</a></li>
-          <li><a href="#roadstudio">RoadStudio</a></li>
-          <li><a href="#contact">Contact</a></li>
-          <li id="loginLink" class="login-link-wrap"><a href="#login" id="loginToggle">Log In</a></li>
-          <li id="accountItem" class="hidden">
-            <span id="accountName"></span>
-            <a href="#" id="logoutBtn" class="btn btn-secondary">Log Out</a>
-          </li>
-        </ul>
+        <div class="nav-panel" role="menu">
+          <ul>
+            <li><a href="#home" role="menuitem">Home</a></li>
+            <li><a href="#about" role="menuitem">About</a></li>
+            <li><a href="#services" role="menuitem">Services</a></li>
+            <li><a href="#roadstudio" role="menuitem">RoadStudio</a></li>
+            <li><a href="#contact" role="menuitem">Contact</a></li>
+            <li id="loginLink" class="login-link-wrap"><a href="#login" id="loginToggle" role="menuitem">Log In</a></li>
+            <li id="accountItem" class="hidden">
+              <span id="accountName"></span>
+              <a href="#" id="logoutBtn" class="btn btn-secondary">Log Out</a>
+            </li>
+          </ul>
+          <div class="nav-cta">
+            <a href="#contact" class="btn" role="menuitem">Get in touch</a>
+          </div>
+        </div>
       </nav>
     </div>
   </header>
@@ -366,17 +371,27 @@
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <div class="socials" aria-label="Social media">
-        <a href="#" aria-label="Facebook placeholder" class="social-link"><span aria-hidden="true">FB</span></a>
-        <a href="#" aria-label="LinkedIn placeholder" class="social-link"><span aria-hidden="true">IN</span></a>
-        <a href="#" aria-label="Twitter/X placeholder" class="social-link"><span aria-hidden="true">X</span></a>
+      <div class="footer-brand">
+        <img src="assets/brp.jpg" alt="Great Builds logo" class="footer-logo">
+        <span class="footer-name">Great Builds Engineering Services Pvt. Ltd.</span>
       </div>
       <ul class="footer-links" aria-label="Footer links">
         <li><a href="#about">About</a></li>
         <li><a href="#services">Services</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
-      <p>&copy; <span id="year"></span> Great Builds Engineering Services Pvt. Ltd. All rights reserved.</p>
+      <div class="footer-aside">
+        <div class="socials" aria-label="Social media">
+          <a href="#" aria-label="Facebook placeholder" class="social-link"><span aria-hidden="true">FB</span></a>
+          <a href="#" aria-label="LinkedIn placeholder" class="social-link"><span aria-hidden="true">IN</span></a>
+          <a href="#" aria-label="Twitter/X placeholder" class="social-link"><span aria-hidden="true">X</span></a>
+        </div>
+        <ul class="footer-legal" aria-label="Legal">
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Terms</a></li>
+        </ul>
+        <p class="footer-copy">&copy; <span id="year"></span> Great Builds Engineering Services Pvt. Ltd.</p>
+      </div>
     </div>
   </footer>
 
