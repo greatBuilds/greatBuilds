@@ -19,6 +19,21 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.remove('no-scroll');
       }
     });
+
+    // Close mobile nav when tapping backdrop
+    const navBackdrop = document.querySelector('[data-close-nav]');
+    if (navBackdrop && nav) {
+      navBackdrop.addEventListener('click', () => {
+        if (nav.classList.contains('is-open')) {
+          nav.classList.remove('is-open');
+          if (navToggle) {
+            navToggle.setAttribute('aria-expanded', 'false');
+            navToggle.setAttribute('aria-label', 'Open menu');
+          }
+          document.body.classList.remove('no-scroll');
+        }
+      });
+    }
   }
 
   // Update footer year
@@ -286,6 +301,189 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('You have been signed out.');
     });
   }
+
+  // ========= Land Converter =========
+  // Base areas in square feet for Nepali units
+  const AANA_SQFT = 342.25;
+  const ROPANI_SQFT = 16 * AANA_SQFT; // 5,476
+  const PAISA_SQFT = AANA_SQFT / 4;   // 85.5625
+  const DAAM_SQFT = AANA_SQFT / 16;   // 21.390625
+
+  const KATTHA_SQFT = 3645;           // Terai standard
+  const BIGHA_SQFT = 20 * KATTHA_SQFT; // 72,900
+  const DHUR_SQFT = KATTHA_SQFT / 20;  // 182.25
+
+  const SQM_PER_SQFT = 0.09290304;
+  function sqftToSqm(sqft) { return sqft * SQM_PER_SQFT; }
+  function sqmToSqft(sqm) { return sqm / SQM_PER_SQFT; }
+
+  function rapdToSqft(r, a, p, d) {
+    const totalAana = (Number(r)||0) * 16 + (Number(a)||0) + (Number(p)||0)/4 + (Number(d)||0)/16;
+    return totalAana * AANA_SQFT;
+  }
+  function sqftToRapd(sqft) {
+    let aanaTotal = sqft / AANA_SQFT;
+    const r = Math.floor(aanaTotal / 16);
+    aanaTotal -= r * 16;
+    const a = Math.floor(aanaTotal);
+    aanaTotal -= a;
+    const pFloat = aanaTotal * 4;
+    const p = Math.floor(pFloat + 1e-6);
+    const d = Math.round((pFloat - p) * 16);
+    return { r, a, p, d };
+  }
+
+  function bkdToSqft(b, k, d) {
+    const totalKattha = (Number(b)||0) * 20 + (Number(k)||0) + (Number(d)||0)/20;
+    return totalKattha * KATTHA_SQFT;
+  }
+  function sqftToBkd(sqft) {
+    let katthaTotal = sqft / KATTHA_SQFT;
+    const b = Math.floor(katthaTotal / 20);
+    katthaTotal -= b * 20;
+    const k = Math.floor(katthaTotal);
+    katthaTotal -= k;
+    const d = Math.round(katthaTotal * 20);
+    return { b, k, d };
+  }
+
+  function fmt(n, d = 4) { return Number(n).toLocaleString(undefined, { maximumFractionDigits: d }); }
+  function formatRapd(o) { return `${o.r} Ropani, ${o.a} Aana, ${o.p} Paisa, ${o.d} Daam`; }
+  function formatBkd(o) { return `${o.b} Bigha, ${o.k} Kattha, ${o.d} Dhur`; }
+
+  // R-A-P-D card
+  const rConvert = document.getElementById('r_convert');
+  const rClear = document.getElementById('r_clear');
+  if (rConvert) {
+    rConvert.addEventListener('click', () => {
+      const sqft = rapdToSqft(
+        document.getElementById('r_ropani')?.value,
+        document.getElementById('r_aana')?.value,
+        document.getElementById('r_paisa')?.value,
+        document.getElementById('r_daam')?.value
+      );
+      const sqm = sqftToSqm(sqft);
+      const asBkd = sqftToBkd(sqft);
+      const el = document.getElementById('r_results');
+      if (el) {
+        el.innerHTML = `
+          <div><strong>Total Area</strong></div>
+          <div>${fmt(sqft,2)} sq ft • ${fmt(sqm,3)} sq m</div>
+          <div>${formatBkd(asBkd)}</div>
+        `;
+      }
+    });
+  }
+  if (rClear) {
+    rClear.addEventListener('click', () => {
+      ['r_ropani','r_aana','r_paisa','r_daam'].forEach(id => { const i=document.getElementById(id); if(i) i.value=0; });
+      const el = document.getElementById('r_results'); if (el) el.textContent = '';
+    });
+  }
+
+  // B-K-D card
+  const bConvert = document.getElementById('b_convert');
+  const bClear = document.getElementById('b_clear');
+  if (bConvert) {
+    bConvert.addEventListener('click', () => {
+      const sqft = bkdToSqft(
+        document.getElementById('b_bigha')?.value,
+        document.getElementById('b_kattha')?.value,
+        document.getElementById('b_dhur')?.value
+      );
+      const sqm = sqftToSqm(sqft);
+      const asRapd = sqftToRapd(sqft);
+      const el = document.getElementById('b_results');
+      if (el) {
+        el.innerHTML = `
+          <div><strong>Total Area</strong></div>
+          <div>${fmt(sqft,2)} sq ft • ${fmt(sqm,3)} sq m</div>
+          <div>${formatRapd(asRapd)}</div>
+        `;
+      }
+    });
+  }
+  if (bClear) {
+    bClear.addEventListener('click', () => {
+      ['b_bigha','b_kattha','b_dhur'].forEach(id => { const i=document.getElementById(id); if(i) i.value=0; });
+      const el = document.getElementById('b_results'); if (el) el.textContent = '';
+    });
+  }
+
+  // Any Unit Converter card
+  const anyConvert = document.getElementById('any_convert');
+  const anyClear = document.getElementById('any_clear');
+  if (anyConvert) {
+    anyConvert.addEventListener('click', () => {
+      const v = Number(document.getElementById('any_value')?.value || 0);
+      const unit = document.getElementById('any_unit')?.value;
+      let sqft = 0;
+      switch (unit) {
+        case 'sqft': sqft = v; break;
+        case 'sqm': sqft = sqmToSqft(v); break;
+        case 'acre': sqft = v * 43560; break;
+        case 'hectare': sqft = v * 107639.104167; break;
+        case 'ropani': sqft = v * ROPANI_SQFT; break;
+        case 'aana': sqft = v * AANA_SQFT; break;
+        case 'paisa': sqft = v * PAISA_SQFT; break;
+        case 'daam': sqft = v * DAAM_SQFT; break;
+        case 'bigha': sqft = v * BIGHA_SQFT; break;
+        case 'kattha': sqft = v * KATTHA_SQFT; break;
+        case 'dhur': sqft = v * DHUR_SQFT; break;
+        default: sqft = 0;
+      }
+      const sqm = sqftToSqm(sqft);
+      const asRapd = sqftToRapd(sqft);
+      const asBkd = sqftToBkd(sqft);
+      const el = document.getElementById('any_results');
+      if (el) {
+        el.innerHTML = `
+          <div><strong>Converted</strong></div>
+          <div>${fmt(sqft,2)} sq ft • ${fmt(sqm,3)} sq m • ${fmt(sqft/43560,4)} acres • ${fmt(sqft/107639.104167,4)} hectares</div>
+          <div>${formatRapd(asRapd)} • ${formatBkd(asBkd)}</div>
+        `;
+      }
+    });
+  }
+  if (anyClear) {
+    anyClear.addEventListener('click', () => {
+      const v = document.getElementById('any_value'); if (v) v.value = 0;
+      const el = document.getElementById('any_results'); if (el) el.textContent = '';
+    });
+  }
+
+  // Plot calculator
+  const plCalc = document.getElementById('pl_calc');
+  const plClear = document.getElementById('pl_clear');
+  if (plCalc) {
+    plCalc.addEventListener('click', () => {
+      const len = Number(document.getElementById('pl_len')?.value || 0);
+      const wid = Number(document.getElementById('pl_wid')?.value || 0);
+      const unit = document.getElementById('pl_unit')?.value;
+      let sqft = 0;
+      if (unit === 'ft') sqft = len * wid;
+      else if (unit === 'm') sqft = sqmToSqft(len * wid);
+      const sqm = sqftToSqm(sqft);
+      const asRapd = sqftToRapd(sqft);
+      const asBkd = sqftToBkd(sqft);
+      const el = document.getElementById('pl_results');
+      if (el) {
+        el.innerHTML = `
+          <div><strong>Area</strong></div>
+          <div>${fmt(sqft,2)} sq ft • ${fmt(sqm,3)} sq m</div>
+          <div>${formatRapd(asRapd)} • ${formatBkd(asBkd)}</div>
+        `;
+      }
+    });
+  }
+  if (plClear) {
+    plClear.addEventListener('click', () => {
+      ['pl_len','pl_wid'].forEach(id => { const i = document.getElementById(id); if (i) i.value = 0; });
+      const el = document.getElementById('pl_results'); if (el) el.textContent = '';
+    });
+  }
+
+  // ========= end Land Converter =========
 
   refreshAuthUI();
 });

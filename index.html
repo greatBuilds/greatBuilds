@@ -22,11 +22,13 @@
         <span class="visually-hidden">Menu</span>
       </button>
       <nav id="primary-navigation" class="nav" aria-label="Primary">
+        <div class="nav-backdrop" data-close-nav></div>
         <div class="nav-panel" role="menu">
           <ul>
             <li><a href="#home" role="menuitem">Home</a></li>
             <li><a href="#about" role="menuitem">About</a></li>
             <li><a href="#services" role="menuitem">Services</a></li>
+            <li><a href="#land" role="menuitem" data-modal-target="#landModal">Land Converter</a></li>
             <li><a href="#roadstudio" role="menuitem">RoadStudio</a></li>
             <li><a href="#contact" role="menuitem">Contact</a></li>
             <li id="loginLink" class="login-link-wrap"><a href="#login" id="loginToggle" role="menuitem">Log In</a></li>
@@ -51,6 +53,8 @@
         <a href="#contact" class="btn">Get in touch</a>
       </div>
     </section>
+
+    
 
     <section class="section" aria-hidden="true"></section>
 
@@ -342,6 +346,110 @@
         </div>
         <button type="submit" class="btn">Log In</button>
       </form>
+    </div>
+    <div class="modal-backdrop" data-close></div>
+  </div>
+
+  <div class="modal" id="landModal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-dialog land-modal" role="document">
+      <button class="modal-close" type="button" data-close aria-label="Close">×</button>
+      <h2>Land Converter</h2>
+      <div class="calc-grid">
+        <article class="card" id="calc-ropani">
+          <h3>Ropani • Aana • Paisa • Daam</h3>
+          <div class="calc-row">
+            <label>Ropani
+              <input type="number" id="r_ropani" min="0" step="1" value="0">
+            </label>
+            <label>Aana
+              <input type="number" id="r_aana" min="0" step="1" value="0">
+            </label>
+            <label>Paisa
+              <input type="number" id="r_paisa" min="0" step="1" value="0">
+            </label>
+            <label>Daam
+              <input type="number" id="r_daam" min="0" step="1" value="0">
+            </label>
+          </div>
+          <div class="calc-actions">
+            <button class="btn" id="r_convert">Convert</button>
+            <button class="btn btn-secondary" id="r_clear">Clear</button>
+          </div>
+          <div class="calc-results" id="r_results"></div>
+        </article>
+
+        <article class="card" id="calc-bigha">
+          <h3>Bigha • Kattha • Dhur</h3>
+          <div class="calc-row">
+            <label>Bigha
+              <input type="number" id="b_bigha" min="0" step="1" value="0">
+            </label>
+            <label>Kattha
+              <input type="number" id="b_kattha" min="0" step="1" value="0">
+            </label>
+            <label>Dhur
+              <input type="number" id="b_dhur" min="0" step="1" value="0">
+            </label>
+          </div>
+          <div class="calc-actions">
+            <button class="btn" id="b_convert">Convert</button>
+            <button class="btn btn-secondary" id="b_clear">Clear</button>
+          </div>
+          <div class="calc-results" id="b_results"></div>
+        </article>
+
+        <article class="card" id="calc-any">
+          <h3>Any Unit Converter</h3>
+          <div class="calc-row">
+            <label>Value
+              <input type="number" id="any_value" min="0" step="0.0001" value="0">
+            </label>
+            <label>Unit
+              <select id="any_unit">
+                <option value="sqft">Square Feet</option>
+                <option value="sqm">Square Meters</option>
+                <option value="acre">Acre</option>
+                <option value="hectare">Hectare</option>
+                <option value="ropani">Ropani</option>
+                <option value="aana">Aana</option>
+                <option value="paisa">Paisa</option>
+                <option value="daam">Daam</option>
+                <option value="bigha">Bigha</option>
+                <option value="kattha">Kattha</option>
+                <option value="dhur">Dhur</option>
+              </select>
+            </label>
+          </div>
+          <div class="calc-actions">
+            <button class="btn" id="any_convert">Convert</button>
+            <button class="btn btn-secondary" id="any_clear">Clear</button>
+          </div>
+          <div class="calc-results" id="any_results"></div>
+        </article>
+
+        <article class="card" id="calc-plot">
+          <h3>Plot Calculator</h3>
+          <div class="calc-row">
+            <label>Length
+              <input type="number" id="pl_len" min="0" step="0.01" value="0">
+            </label>
+            <label>Width
+              <input type="number" id="pl_wid" min="0" step="0.01" value="0">
+            </label>
+            <label>Unit
+              <select id="pl_unit">
+                <option value="ft">Feet</option>
+                <option value="m">Meters</option>
+              </select>
+            </label>
+          </div>
+          <div class="calc-actions">
+            <button class="btn" id="pl_calc">Calculate</button>
+            <button class="btn btn-secondary" id="pl_clear">Clear</button>
+          </div>
+          <div class="calc-results" id="pl_results"></div>
+        </article>
+      </div>
     </div>
     <div class="modal-backdrop" data-close></div>
   </div>
