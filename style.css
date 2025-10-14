@@ -46,6 +46,7 @@ img { max-width: 100%; display: block; }
 @media (min-width: 768px) {
   .nav-toggle { display: none; }
   .nav { display: block; }
+  .nav-cta { display: none !important; }
 }
 
 /* Mobile dropdown panel */
