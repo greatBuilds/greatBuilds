@@ -354,26 +354,45 @@ document.addEventListener('DOMContentLoaded', () => {
   // R-A-P-D card
   const rConvert = document.getElementById('r_convert');
   const rClear = document.getElementById('r_clear');
-  if (rConvert) {
-    rConvert.addEventListener('click', () => {
-      const sqft = rapdToSqft(
-        document.getElementById('r_ropani')?.value,
-        document.getElementById('r_aana')?.value,
-        document.getElementById('r_paisa')?.value,
-        document.getElementById('r_daam')?.value
-      );
-      const sqm = sqftToSqm(sqft);
-      const asBkd = sqftToBkd(sqft);
-      const el = document.getElementById('r_results');
-      if (el) {
-        el.innerHTML = `
-          <div><strong>Total Area</strong></div>
-          <div>${fmt(sqft,2)} sq ft • ${fmt(sqm,3)} sq m</div>
-          <div>${formatBkd(asBkd)}</div>
-        `;
-      }
-    });
+  
+  function updateRopaniResults() {
+    const r = Number(document.getElementById('r_ropani')?.value || 0);
+    const a = Number(document.getElementById('r_aana')?.value || 0);
+    const p = Number(document.getElementById('r_paisa')?.value || 0);
+    const d = Number(document.getElementById('r_daam')?.value || 0);
+    
+    const sqft = rapdToSqft(r, a, p, d);
+    const sqm = sqftToSqm(sqft);
+    const asBkd = sqftToBkd(sqft);
+    
+    // Calculate total in lower units
+    const totalAana = r * 16 + a + p/4 + d/16;
+    const totalPaisa = totalAana * 4;
+    const totalDaam = totalPaisa * 4;
+    
+    const el = document.getElementById('r_results');
+    if (el) {
+      el.innerHTML = `
+        <div><strong>Total in Ropani Units:</strong></div>
+        <div>${fmt(totalAana,4)} Aana OR ${fmt(totalPaisa,3)} Paisa OR ${fmt(totalDaam,2)} Daam</div>
+        <div><strong>Area:</strong> ${fmt(sqft,2)} sq ft OR ${fmt(sqm,3)} sq m</div>
+        <div><strong>Bigha System:</strong> ${formatBkd(asBkd)}</div>
+      `;
+    }
   }
+  
+  if (rConvert) {
+    rConvert.addEventListener('click', updateRopaniResults);
+  }
+  
+  // Add real-time input handling
+  ['r_ropani','r_aana','r_paisa','r_daam'].forEach(id => {
+    const input = document.getElementById(id);
+    if (input) {
+      input.addEventListener('input', updateRopaniResults);
+    }
+  });
+  
   if (rClear) {
     rClear.addEventListener('click', () => {
       ['r_ropani','r_aana','r_paisa','r_daam'].forEach(id => { const i=document.getElementById(id); if(i) i.value=0; });
@@ -384,25 +403,43 @@ document.addEventListener('DOMContentLoaded', () => {
   // B-K-D card
   const bConvert = document.getElementById('b_convert');
   const bClear = document.getElementById('b_clear');
-  if (bConvert) {
-    bConvert.addEventListener('click', () => {
-      const sqft = bkdToSqft(
-        document.getElementById('b_bigha')?.value,
-        document.getElementById('b_kattha')?.value,
-        document.getElementById('b_dhur')?.value
-      );
-      const sqm = sqftToSqm(sqft);
-      const asRapd = sqftToRapd(sqft);
-      const el = document.getElementById('b_results');
-      if (el) {
-        el.innerHTML = `
-          <div><strong>Total Area</strong></div>
-          <div>${fmt(sqft,2)} sq ft • ${fmt(sqm,3)} sq m</div>
-          <div>${formatRapd(asRapd)}</div>
-        `;
-      }
-    });
+  
+  function updateBighaResults() {
+    const b = Number(document.getElementById('b_bigha')?.value || 0);
+    const k = Number(document.getElementById('b_kattha')?.value || 0);
+    const d = Number(document.getElementById('b_dhur')?.value || 0);
+    
+    const sqft = bkdToSqft(b, k, d);
+    const sqm = sqftToSqm(sqft);
+    const asRapd = sqftToRapd(sqft);
+    
+    // Calculate total in lower units
+    const totalKattha = b * 20 + k + d/20;
+    const totalDhur = totalKattha * 20;
+    
+    const el = document.getElementById('b_results');
+    if (el) {
+      el.innerHTML = `
+        <div><strong>Total in Bigha Units:</strong></div>
+        <div>${fmt(totalKattha,4)} Kattha OR ${fmt(totalDhur,2)} Dhur</div>
+        <div><strong>Area:</strong> ${fmt(sqft,2)} sq ft OR ${fmt(sqm,3)} sq m</div>
+        <div><strong>Ropani System:</strong> ${formatRapd(asRapd)}</div>
+      `;
+    }
   }
+  
+  if (bConvert) {
+    bConvert.addEventListener('click', updateBighaResults);
+  }
+  
+  // Add real-time input handling
+  ['b_bigha','b_kattha','b_dhur'].forEach(id => {
+    const input = document.getElementById(id);
+    if (input) {
+      input.addEventListener('input', updateBighaResults);
+    }
+  });
+  
   if (bClear) {
     bClear.addEventListener('click', () => {
       ['b_bigha','b_kattha','b_dhur'].forEach(id => { const i=document.getElementById(id); if(i) i.value=0; });
@@ -413,38 +450,50 @@ document.addEventListener('DOMContentLoaded', () => {
   // Any Unit Converter card
   const anyConvert = document.getElementById('any_convert');
   const anyClear = document.getElementById('any_clear');
-  if (anyConvert) {
-    anyConvert.addEventListener('click', () => {
-      const v = Number(document.getElementById('any_value')?.value || 0);
-      const unit = document.getElementById('any_unit')?.value;
-      let sqft = 0;
-      switch (unit) {
-        case 'sqft': sqft = v; break;
-        case 'sqm': sqft = sqmToSqft(v); break;
-        case 'acre': sqft = v * 43560; break;
-        case 'hectare': sqft = v * 107639.104167; break;
-        case 'ropani': sqft = v * ROPANI_SQFT; break;
-        case 'aana': sqft = v * AANA_SQFT; break;
-        case 'paisa': sqft = v * PAISA_SQFT; break;
-        case 'daam': sqft = v * DAAM_SQFT; break;
-        case 'bigha': sqft = v * BIGHA_SQFT; break;
-        case 'kattha': sqft = v * KATTHA_SQFT; break;
-        case 'dhur': sqft = v * DHUR_SQFT; break;
-        default: sqft = 0;
-      }
-      const sqm = sqftToSqm(sqft);
-      const asRapd = sqftToRapd(sqft);
-      const asBkd = sqftToBkd(sqft);
-      const el = document.getElementById('any_results');
-      if (el) {
-        el.innerHTML = `
-          <div><strong>Converted</strong></div>
-          <div>${fmt(sqft,2)} sq ft • ${fmt(sqm,3)} sq m • ${fmt(sqft/43560,4)} acres • ${fmt(sqft/107639.104167,4)} hectares</div>
-          <div>${formatRapd(asRapd)} • ${formatBkd(asBkd)}</div>
-        `;
-      }
-    });
+  
+  function updateAnyUnitResults() {
+    const v = Number(document.getElementById('any_value')?.value || 0);
+    const unit = document.getElementById('any_unit')?.value;
+    let sqft = 0;
+    switch (unit) {
+      case 'sqft': sqft = v; break;
+      case 'sqm': sqft = sqmToSqft(v); break;
+      case 'acre': sqft = v * 43560; break;
+      case 'hectare': sqft = v * 107639.104167; break;
+      case 'ropani': sqft = v * ROPANI_SQFT; break;
+      case 'aana': sqft = v * AANA_SQFT; break;
+      case 'paisa': sqft = v * PAISA_SQFT; break;
+      case 'daam': sqft = v * DAAM_SQFT; break;
+      case 'bigha': sqft = v * BIGHA_SQFT; break;
+      case 'kattha': sqft = v * KATTHA_SQFT; break;
+      case 'dhur': sqft = v * DHUR_SQFT; break;
+      default: sqft = 0;
+    }
+    const sqm = sqftToSqm(sqft);
+    const asRapd = sqftToRapd(sqft);
+    const asBkd = sqftToBkd(sqft);
+    const el = document.getElementById('any_results');
+    if (el) {
+      el.innerHTML = `
+        <div><strong>Converted:</strong></div>
+        <div><strong>Area:</strong> ${fmt(sqft,2)} sq ft OR ${fmt(sqm,3)} sq m</div>
+        <div><strong>International:</strong> ${fmt(sqft/43560,4)} acres OR ${fmt(sqft/107639.104167,4)} hectares</div>
+        <div><strong>Ropani:</strong> ${formatRapd(asRapd)}</div>
+        <div><strong>Bigha:</strong> ${formatBkd(asBkd)}</div>
+      `;
+    }
   }
+  
+  if (anyConvert) {
+    anyConvert.addEventListener('click', updateAnyUnitResults);
+  }
+  
+  // Add real-time input handling
+  const anyValue = document.getElementById('any_value');
+  const anyUnit = document.getElementById('any_unit');
+  if (anyValue) anyValue.addEventListener('input', updateAnyUnitResults);
+  if (anyUnit) anyUnit.addEventListener('change', updateAnyUnitResults);
+  
   if (anyClear) {
     anyClear.addEventListener('click', () => {
       const v = document.getElementById('any_value'); if (v) v.value = 0;
@@ -455,27 +504,40 @@ document.addEventListener('DOMContentLoaded', () => {
   // Plot calculator
   const plCalc = document.getElementById('pl_calc');
   const plClear = document.getElementById('pl_clear');
-  if (plCalc) {
-    plCalc.addEventListener('click', () => {
-      const len = Number(document.getElementById('pl_len')?.value || 0);
-      const wid = Number(document.getElementById('pl_wid')?.value || 0);
-      const unit = document.getElementById('pl_unit')?.value;
-      let sqft = 0;
-      if (unit === 'ft') sqft = len * wid;
-      else if (unit === 'm') sqft = sqmToSqft(len * wid);
-      const sqm = sqftToSqm(sqft);
-      const asRapd = sqftToRapd(sqft);
-      const asBkd = sqftToBkd(sqft);
-      const el = document.getElementById('pl_results');
-      if (el) {
-        el.innerHTML = `
-          <div><strong>Area</strong></div>
-          <div>${fmt(sqft,2)} sq ft • ${fmt(sqm,3)} sq m</div>
-          <div>${formatRapd(asRapd)} • ${formatBkd(asBkd)}</div>
-        `;
-      }
-    });
+  
+  function updatePlotResults() {
+    const len = Number(document.getElementById('pl_len')?.value || 0);
+    const wid = Number(document.getElementById('pl_wid')?.value || 0);
+    const unit = document.getElementById('pl_unit')?.value;
+    let sqft = 0;
+    if (unit === 'ft') sqft = len * wid;
+    else if (unit === 'm') sqft = sqmToSqft(len * wid);
+    const sqm = sqftToSqm(sqft);
+    const asRapd = sqftToRapd(sqft);
+    const asBkd = sqftToBkd(sqft);
+    const el = document.getElementById('pl_results');
+    if (el) {
+      el.innerHTML = `
+        <div><strong>Area:</strong></div>
+        <div>${fmt(sqft,2)} sq ft OR ${fmt(sqm,3)} sq m</div>
+        <div><strong>Ropani:</strong> ${formatRapd(asRapd)}</div>
+        <div><strong>Bigha:</strong> ${formatBkd(asBkd)}</div>
+      `;
+    }
   }
+  
+  if (plCalc) {
+    plCalc.addEventListener('click', updatePlotResults);
+  }
+  
+  // Add real-time input handling
+  ['pl_len','pl_wid'].forEach(id => {
+    const input = document.getElementById(id);
+    if (input) input.addEventListener('input', updatePlotResults);
+  });
+  const plUnit = document.getElementById('pl_unit');
+  if (plUnit) plUnit.addEventListener('change', updatePlotResults);
+  
   if (plClear) {
     plClear.addEventListener('click', () => {
       ['pl_len','pl_wid'].forEach(id => { const i = document.getElementById(id); if (i) i.value = 0; });
